@@ -1,0 +1,24 @@
+networks:
+  redis-net:
+
+services:
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks: 
+      - redis-net
+  redis-cli:
+    container_name: redis-cli
+    image: redis:latest
+    depends_on:
+      - redis
+    entrypoint: ["redis-cli", "-h", "redis"]
+    stdin_open: true
+    tty: true
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    networks:
+      - redis-net
