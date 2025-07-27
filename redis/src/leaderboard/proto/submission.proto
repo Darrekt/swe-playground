@@ -1,0 +1,13 @@
+syntax = "proto3";
+package leaderboard;
+
+import "google/protobuf/timestamp.proto";
+option go_package = "github.com/Darrekt/swe-playground/redis/src/leaderboard/proto";
+
+message Submission {
+  int32 user_id = 1;
+  string name = 2;
+  int32 question_id = 3;
+  int32 score = 4;
+  google.protobuf.Timestamp timestamp = 5;
+}
