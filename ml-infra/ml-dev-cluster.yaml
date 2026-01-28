@@ -1,0 +1,32 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  # The Control Plane (Master Node)
+  - role: control-plane
+    kubeadmConfigPatches:
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "ingress-ready=true"
+    # Port Mappings: Critical for accessing Dashboards from your browser
+    extraPortMappings:
+      - containerPort: 80
+        hostPort: 80
+        protocol: TCP
+      - containerPort: 443
+        hostPort: 443
+        protocol: TCP
+
+  # A "GPU" Worker Node (We will label it later to act like one)
+  - role: worker
+    extraMounts:
+      # 1. The Compute Interface (Required for ROCm/PyTorch)
+      - hostPath: /dev/kfd
+        containerPath: /dev/kfd
+      # 2. The Direct Rendering Manager (Required for the card itself)
+      - hostPath: /dev/dri
+        containerPath: /dev/dri
+      # 3. Data directory
+      - hostPath: /opt/ml-data
+        containerPath: /data
